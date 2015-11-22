@@ -19,8 +19,8 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     测试数据/ws/source
-                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()">sync</a>
-                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()">disconnect</a>
+                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()" ng-disabled="ws">sync</a>
+                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()" ng-disabled="!ws">disconnect</a>
                 </div>
                 <div class="panel-body">{{data}}</div>
             </div>
@@ -28,8 +28,8 @@
         <div class="col-sm-6" ng-controller="controller2">
             <div class="panel panel-primary">
                 <div class="panel-heading">测试数据/ws/source2
-                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()">sync</a>
-                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()">disconnect</a>
+                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()" ng-disabled="ws">sync</a>
+                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()" ng-disabled="!ws">disconnect</a>
                 </div>
                 <div class="panel-body" ng-bind="data|json"></div>
             </div>
@@ -40,8 +40,8 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     测试数据/ws/source3
-                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()">sync</a>
-                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()">disconnect</a>
+                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()" ng-disabled="ws">sync</a>
+                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()" ng-disabled="!ws">disconnect</a>
                 </div>
                 <div class="panel-body">{{data}}</div>
             </div>
@@ -50,8 +50,8 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     测试数据/ws/source4
-                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()">sync</a>
-                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()">disconnect</a>
+                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()" ng-disabled="ws">sync</a>
+                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()" ng-disabled="!ws">disconnect</a>
                 </div>
                 <div class="panel-body">{{data}}</div>
             </div>
@@ -62,8 +62,8 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     测试数据/ws/source5
-                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()">sync</a>
-                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()">disconnect</a>
+                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()" ng-disabled="ws">sync</a>
+                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()" ng-disabled="!ws">disconnect</a>
                 </div>
                 <div class="panel-body">{{data}}</div>
             </div>
@@ -72,8 +72,8 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     测试数据/ws/source4
-                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()">sync</a>
-                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()">disconnect</a>
+                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()" ng-disabled="ws">sync</a>
+                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()" ng-disabled="!ws">disconnect</a>
                 </div>
                 <div class="panel-body">{{data}}</div>
             </div>
@@ -86,10 +86,10 @@
 <script>
     angular.module('app', []);
     angular.module('app').controller('controller1', function ($scope, $timeout, WSService) {
-        $scope.data = {id: 1, name: 'litx'};
+        $scope.data = {};
         var ws;
         $scope.sync = function () {
-            ws = WSService.source({
+            $scope.ws = WSService.source({
                 url: '/ws/source',
                 onmessage: function (evt) {
                     console.log(evt.data);
@@ -98,18 +98,17 @@
                 }
             });
         };
-
         $scope.disconn = function () {
-            ws.close(3123, "i am disconnect");
-        }
+            $scope.ws.close(3123, "i am disconnect");
+            $scope.ws = null;
+        };
     });
 
 
     angular.module('app').controller('controller2', function ($scope, WSService) {
-        $scope.data = {id: 1, name: 'litx'};
-        var ws;
+        $scope.data = {};
         $scope.sync = function () {
-            ws = WSService.source({
+            $scope.ws = WSService.source({
                 url: '/ws/source2',
                 onmessage: function (evt) {
                     console.log(evt.data);
@@ -119,15 +118,16 @@
             });
         };
         $scope.disconn = function () {
-            ws.close(3123, "i am disconnect");
-        }
+            $scope.ws.close(3123, "i am disconnect");
+            $scope.ws = null;
+        };
+
     });
 
     angular.module('app').controller('controller3', function ($scope, WSService) {
-        $scope.data = {id: 1, name: 'litx'};
-        var ws;
+        $scope.data = {};
         $scope.sync = function () {
-            ws = WSService.source({
+            $scope.ws = WSService.source({
                 url: '/ws/source3',
                 onmessage: function (evt) {
                     console.log(evt.data);
@@ -137,14 +137,14 @@
             });
         };
         $scope.disconn = function () {
-            ws.close(3123, "i am disconnect");
-        }
+            $scope.ws.close(3123, "i am disconnect");
+            $scope.ws = null;
+        };
     });
     angular.module('app').controller('controller4', function ($scope, WSService) {
-        $scope.data = {id: 1, name: 'litx'};
-        var ws;
+        $scope.data = {};
         $scope.sync = function () {
-            ws = WSService.source({
+            $scope.ws = WSService.source({
                 url: '/ws/source4',
                 onmessage: function (evt) {
                     console.log(evt.data);
@@ -154,15 +154,15 @@
             });
         };
         $scope.disconn = function () {
-            ws.close(3123, "i am disconnect");
-        }
+            $scope.ws.close(3123, "i am disconnect");
+            $scope.ws = null;
+        };
     });
     angular.module('app').controller('controller5', function ($scope, WSService) {
-        $scope.data = {id: 1, name: 'litx'};
-        var ws;
+        $scope.data = {};
         $scope.sync = function () {
-            ws = WSService.source({
-                url: '/ws/source5?x=abc',
+            $scope.ws = WSService.source({
+                url: '/ws/source5',
                 onmessage: function (evt) {
                     console.log(evt.data);
                     $scope.data = JSON.parse(evt.data);
@@ -170,10 +170,10 @@
                 }
             });
         };
-
         $scope.disconn = function () {
-            ws.close(3123, "i am disconnect");
-        }
+            $scope.ws.close(3123, "i am disconnect");
+            $scope.ws = null;
+        };
     });
 
 
