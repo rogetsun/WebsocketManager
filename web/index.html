@@ -27,7 +27,10 @@
         </div>
         <div class="col-sm-6" ng-controller="controller2">
             <div class="panel panel-primary">
-                <div class="panel-heading">测试数据/ws/source2</div>
+                <div class="panel-heading">测试数据/ws/source2
+                    <a href="" class="btn btn-xs btn-warning pull-right mr" ng-click="sync()">sync</a>
+                    <a href="" class="btn btn-xs btn-danger pull-right mr" ng-click="disconn()">disconnect</a>
+                </div>
                 <div class="panel-body" ng-bind="data|json"></div>
             </div>
         </div>
@@ -84,16 +87,17 @@
     angular.module('app', []);
     angular.module('app').controller('controller1', function ($scope, $timeout, WSService) {
         $scope.data = {id: 1, name: 'litx'};
-        var ws = WSService.source({
-            data: "dsfdsa",
-            onmessage: function (evt) {
-                console.log(evt.data);
-//                $timeout(function () {
-                $scope.data = JSON.parse(evt.data);
-                $scope.$digest();
-//                });
-            }
-        });
+        var ws;
+        $scope.sync = function () {
+            ws = WSService.source({
+                url: '/ws/source',
+                onmessage: function (evt) {
+                    console.log(evt.data);
+                    $scope.data = JSON.parse(evt.data);
+                    $scope.$digest();
+                }
+            });
+        };
 
         $scope.disconn = function () {
             ws.close(3123, "i am disconnect");
@@ -103,48 +107,73 @@
 
     angular.module('app').controller('controller2', function ($scope, WSService) {
         $scope.data = {id: 1, name: 'litx'};
-        WSService.source({
-            url: '/ws/source2',
-            onmessage: function (evt) {
-                console.log(evt.data);
-                $scope.data = JSON.parse(evt.data);
-                $scope.$digest();
-            }
-        });
+        var ws;
+        $scope.sync = function () {
+            ws = WSService.source({
+                url: '/ws/source2',
+                onmessage: function (evt) {
+                    console.log(evt.data);
+                    $scope.data = JSON.parse(evt.data);
+                    $scope.$digest();
+                }
+            });
+        };
+        $scope.disconn = function () {
+            ws.close(3123, "i am disconnect");
+        }
     });
 
     angular.module('app').controller('controller3', function ($scope, WSService) {
         $scope.data = {id: 1, name: 'litx'};
-        WSService.source({
-            url: '/ws/source3',
-            onmessage: function (evt) {
-                console.log(evt.data);
-                $scope.data = JSON.parse(evt.data);
-                $scope.$digest();
-            }
-        });
+        var ws;
+        $scope.sync = function () {
+            ws = WSService.source({
+                url: '/ws/source3',
+                onmessage: function (evt) {
+                    console.log(evt.data);
+                    $scope.data = JSON.parse(evt.data);
+                    $scope.$digest();
+                }
+            });
+        };
+        $scope.disconn = function () {
+            ws.close(3123, "i am disconnect");
+        }
     });
     angular.module('app').controller('controller4', function ($scope, WSService) {
         $scope.data = {id: 1, name: 'litx'};
-        WSService.source({
-            url: '/ws/source4',
-            onmessage: function (evt) {
-                console.log(evt.data);
-                $scope.data = JSON.parse(evt.data);
-                $scope.$digest();
-            }
-        });
+        var ws;
+        $scope.sync = function () {
+            ws = WSService.source({
+                url: '/ws/source4',
+                onmessage: function (evt) {
+                    console.log(evt.data);
+                    $scope.data = JSON.parse(evt.data);
+                    $scope.$digest();
+                }
+            });
+        };
+        $scope.disconn = function () {
+            ws.close(3123, "i am disconnect");
+        }
     });
     angular.module('app').controller('controller5', function ($scope, WSService) {
         $scope.data = {id: 1, name: 'litx'};
-        WSService.source({
-            url: '/ws/source5?x=abc',
-            onmessage: function (evt) {
-                console.log(evt.data);
-                $scope.data = JSON.parse(evt.data);
-                $scope.$digest();
-            }
-        });
+        var ws;
+        $scope.sync = function () {
+            ws = WSService.source({
+                url: '/ws/source5?x=abc',
+                onmessage: function (evt) {
+                    console.log(evt.data);
+                    $scope.data = JSON.parse(evt.data);
+                    $scope.$digest();
+                }
+            });
+        };
+
+        $scope.disconn = function () {
+            ws.close(3123, "i am disconnect");
+        }
     });
 
 
