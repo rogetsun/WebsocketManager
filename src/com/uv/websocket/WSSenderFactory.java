@@ -7,7 +7,7 @@ import java.util.concurrent.TransferQueue;
 /**
  * Created by uv2sun on 15/11/19.
  */
-public class WSCacheFactory {
+public class WSSenderFactory {
 
     /**
      * 初始化websocket发送缓存通道,并启动发送线程,持续从缓存提取数据发送
@@ -15,10 +15,8 @@ public class WSCacheFactory {
      * @param session
      * @return
      */
-    public static WSCache<String> initWebSocketCache(Session session) {
-        WSCache<String> cache = newTransferQueue();
-        new Thread(new WSSender(cache, session)).start();
-        return cache;
+    public static WSSender initWebSocketSender(Session session) {
+        return new WSSender(newWSCache(), session);
     }
 
 
@@ -27,10 +25,16 @@ public class WSCacheFactory {
      *
      * @return
      */
-    private static WSCache<String> newTransferQueue() {
+    private static WSCache<String> newWSCache() {
 
         return new WSCache<String>() {
+            /**
+             * WSCache缓存实现队列
+             */
             private TransferQueue<String> queue = new LinkedTransferQueue<>();
+            /**
+             * 缓存是否打开可用状态标志位
+             */
             private boolean openFlag = true;
 
             @Override

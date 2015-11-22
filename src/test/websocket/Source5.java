@@ -19,6 +19,7 @@ public class Source5 extends WSServer {
 
     @ReceiveDataType("random_data")
     public JSONObject randomAge(JSONObject data) {
+        System.out.println("httpSession:" + getHttpSession());
         if (data != null) {
             return data;
         } else

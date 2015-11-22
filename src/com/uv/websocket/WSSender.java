@@ -7,24 +7,29 @@ import javax.websocket.Session;
  * websocket 处理器
  */
 public class WSSender implements Runnable {
-    private WSCache<String> cache;
+    private WSCache<String> wsCache;
     private Session session;
 
     @Override
     public void run() {
         while (session.isOpen()) {
             try {
-                session.getBasicRemote().sendText(cache.pop());
+                session.getBasicRemote().sendText(wsCache.pop());
+            } catch (InterruptedException e) {
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("WSSender.closed");
-        cache.close();
+        wsCache.close();
     }
 
-    public WSSender(WSCache<String> cache, Session session) {
-        this.cache = cache;
+    public WSSender(WSCache<String> wsCache, Session session) {
+        this.wsCache = wsCache;
         this.session = session;
     }
+
+    public WSCache<String> getWsCache() {
+        return wsCache;
+    }
+
 }
