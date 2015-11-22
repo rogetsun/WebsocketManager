@@ -17,7 +17,7 @@ public class Source5 extends WSServer {
 
     private ScheduledFuture scheduledFuture;
 
-    @ReceiveDataType("randomData")
+    @ReceiveDataType("random_data")
     public JSONObject randomAge(JSONObject data) {
         if (data != null) {
             return data;
@@ -27,7 +27,7 @@ public class Source5 extends WSServer {
 
     @Override
     public void onInit() {
-        ScheduledFuture future = TimerUtil.interval(new EventTriggerTask("randomData"), 1000, 1000);
+        ScheduledFuture future = TimerUtil.interval(new EventTriggerTask("random_data"), 1000, 1000);
         this.scheduledFuture = future;
     }
 

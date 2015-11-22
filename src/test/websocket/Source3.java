@@ -21,6 +21,6 @@ public class Source3 extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
         System.out.println("@override onOpen@Source3");
         System.out.println(endpointConfig.getUserProperties().keySet());
-        session.getAsyncRemote().sendText(JSONObject.fromObject("{id:9, name:'litx3', age:999}").toString());
+        session.getAsyncRemote().sendText(JSONObject.fromObject("{id:3333, name:'litx3', age:999}").toString());
     }
 }

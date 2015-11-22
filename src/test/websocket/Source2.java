@@ -5,16 +5,12 @@ import net.sf.json.JSONObject;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by uv2sun on 15/11/19.
  */
 @ServerEndpoint("/ws/source2")
 public class Source2 {
-    private static Set<Session> wsSet = Collections.synchronizedSet(new HashSet<Session>());
 
     @OnMessage
     public void msg(Session s, String msg) throws IOException {
@@ -32,7 +28,7 @@ public class Source2 {
             @Override
             public void run() {
                 while (true) {
-                    JSONObject jo = JSONObject.fromObject("{'id':2, 'name':'litx', 'age':" + ((int) (Math.random() * 1000)) + "}");
+                    JSONObject jo = JSONObject.fromObject("{'id':2222, 'name':'litx', 'age':" + ((int) (Math.random() * 1000)) + "}");
                     s.getAsyncRemote().sendText(jo.toString());
                     try {
                         Thread.sleep(1000);
@@ -42,14 +38,12 @@ public class Source2 {
                 }
             }
         }).start();
-        wsSet.add(s);
     }
 
     @OnClose
     public void close(Session s, CloseReason r) {
         System.out.println("@OnClose:Session=" + s + ",CloseReason=" + r);
         s.getAsyncRemote().sendText("Server is agreed close");
-        wsSet.remove(s);
     }
 
     @OnError
