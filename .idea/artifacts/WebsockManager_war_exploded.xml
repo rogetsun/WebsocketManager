@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="WebsockManager:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/WebsockManager_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="WebsocketManager/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="WebsocketManager" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$PROJECT_DIR$/../EventTimer/out/artifacts/EventTimer_jar/EventTimer.jar" />
+          <element id="library" level="application" name="json-lib" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
