@@ -40,8 +40,9 @@ websocket使用方法:
         5.1.即扫描当前WSServer的实现类中@ReceiveMsgType注解的方法
         5.2.实现一个EventHandleS,在deal中调用扫描到的方法,并将返回值放入当前WSSender的WSCache中.
         5.3.将EventHandleS注册到事件容器中,事件名称即为@ReceiveMsgType注解的value
+        5.4.调用onInit方法.用于让用户覆盖写入自定义代码
     6.等待接收到事件后,拿到数据放入WSCache.
-    7.onclose时,将WSCache清空关闭,将WSSender发送器线程打断.将放入事件容器的事件处理器EventHandlerS删除.
+    7.onclose时,将WSCache清空关闭,将WSSender发送器线程打断.将放入事件容器的事件处理器EventHandlerS删除.调用onDestroy,用于自定义结束代码
 
 常用:
     部署本项目到支持Websocket的容器,打开页面可以查看.
