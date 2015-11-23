@@ -4,7 +4,7 @@ import com.uv.timer.EventTriggerTask;
 import com.uv.timer.TimerUtil;
 import com.uv.websocket.WSServer;
 import com.uv.websocket.annotation.ReceiveMsgType;
-import com.uv.websocket.annotation.WSServerPoint;
+import com.uv.websocket.annotation.WSServerEndpoint;
 import com.uv.websocket.message.MessageType;
 import net.sf.json.JSONObject;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledFuture;
 /**
  * Created by uv2sun on 15/11/22.
  */
-@WSServerPoint("/ws/source5")
+@WSServerEndpoint("/ws/source5")
 public class Source5 extends WSServer {
 
     private ScheduledFuture scheduledFuture;

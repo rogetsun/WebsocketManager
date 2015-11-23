@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface WSServerPoint {
+public @interface WSServerEndpoint {
     String value();
 }

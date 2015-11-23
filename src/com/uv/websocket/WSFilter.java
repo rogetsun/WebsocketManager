@@ -22,13 +22,13 @@ public class WSFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         final Principal p = new PrincipalHasSession(request.getSession());
-        HttpServletRequest requestWapper = new HttpServletRequestWrapper(request) {
+        HttpServletRequest requestWrapper = new HttpServletRequestWrapper(request) {
             @Override
             public Principal getUserPrincipal() {
                 return p;
             }
         };
-        filterChain.doFilter(requestWapper, servletResponse);
+        filterChain.doFilter(requestWrapper, servletResponse);
     }
 
     @Override

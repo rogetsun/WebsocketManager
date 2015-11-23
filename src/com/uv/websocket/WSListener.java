@@ -1,7 +1,7 @@
 package com.uv.websocket;
 
 import com.uv.util.ScanClassUtil;
-import com.uv.websocket.annotation.WSServerPoint;
+import com.uv.websocket.annotation.WSServerEndpoint;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -34,7 +34,7 @@ public class WSListener implements ServletContextListener {
              * 递归扫描每个包下面有WSServerPoint注解的类,认为是endpoint实现类
              */
             for (Class<?> aClass : ScanClassUtil.getClasses(pkg)) {
-                WSServerPoint point = aClass.getAnnotation(WSServerPoint.class);
+                WSServerEndpoint point = aClass.getAnnotation(WSServerEndpoint.class);
                 if (point != null) {
                     String url = point.value();
                     if (url != null && url.length() > 0) {
@@ -106,6 +106,7 @@ public class WSListener implements ServletContextListener {
                     sec.getUserProperties().put(HttpSession.class.getName(), principalHasSession.getSession());
                 }
             } catch (Exception e) {
+                System.out.println("web容器不支持websocket获取HttpSession,同时未配置过滤器WSFilter实现HttpSession的放入EndpointConfig.getUserProperties(HttpSession.class.getName()).");
                 e.printStackTrace();
             }
         }

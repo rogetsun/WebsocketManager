@@ -120,7 +120,13 @@ public abstract class WSServer extends Endpoint {
                         public void deal(String s, JSONObject jsonObject) {
                             try {
                                 if (cache.isOpen()) {
+                                    /**
+                                     * 执行用户定义方法,并获得返回值msg
+                                     */
                                     Object msg = method.invoke(wsServer, jsonObject);
+                                    /**
+                                     * 将msg.toString()放进websocket的发送缓存
+                                     */
                                     cache.push(msg.toString());
                                 } else {
                                     getEventEmitter().remove(dataType, this);
