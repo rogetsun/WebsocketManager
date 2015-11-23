@@ -5,6 +5,7 @@ import com.uv.timer.TimerUtil;
 import com.uv.websocket.WSServer;
 import com.uv.websocket.annotation.ReceiveMsgType;
 import com.uv.websocket.annotation.WSServerPoint;
+import com.uv.websocket.message.MessageType;
 import net.sf.json.JSONObject;
 
 import java.util.concurrent.ScheduledFuture;
@@ -17,7 +18,7 @@ public class Source5 extends WSServer {
 
     private ScheduledFuture scheduledFuture;
 
-    @ReceiveMsgType("random_data")
+    @ReceiveMsgType(MessageType.MESSAGE)
     public JSONObject randomAge(JSONObject data) {
         System.out.println("httpSession:" + getHttpSession());
         if (data != null) {
@@ -28,7 +29,7 @@ public class Source5 extends WSServer {
 
     @Override
     public void onInit() {
-        ScheduledFuture future = TimerUtil.interval(new EventTriggerTask("random_data"), 1000, 1000);
+        ScheduledFuture future = TimerUtil.interval(new EventTriggerTask(MessageType.MESSAGE), 1000, 1000);
         this.scheduledFuture = future;
     }
 
