@@ -10,12 +10,12 @@ import net.sf.json.JSONObject;
  * Created by uv2sun on 15/11/22.
  */
 
-@WSServerEndpoint("/ws/source4")
+@WSServerEndpoint("/source4")
 public class Source4 extends WSServer {
 
     @ReceiveMsgType(MessageType.REALTIME_SENSOR_DATA)
     public String realtimeSensorData(JSONObject jsonObject) {
-        System.out.println("@source4:"+MessageType.REALTIME_SENSOR_DATA);
+        System.out.println("@source4:" + MessageType.REALTIME_SENSOR_DATA);
         System.out.println(jsonObject);
         return jsonObject.toString();
     }

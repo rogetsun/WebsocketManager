@@ -7,10 +7,12 @@
         <listener-class>com.uv.websocket.WSListener</listener-class>
     </listener>
     <context-param>
-
         <param-name>WSServerEndpointPackage</param-name>
         <param-value>com.uv.websocket,test.websocket</param-value>
-
+    </context-param>
+    <context-param>
+        <param-name>WSServerEndpointUrlPrefix</param-name>
+        <param-value>/ws</param-value>
     </context-param>
 
     <filter>

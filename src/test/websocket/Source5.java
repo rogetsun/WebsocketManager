@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledFuture;
 /**
  * Created by uv2sun on 15/11/22.
  */
-@WSServerEndpoint("/ws/source5")
+@WSServerEndpoint("/source5")
 public class Source5 extends WSServer {
 
     private ScheduledFuture scheduledFuture;

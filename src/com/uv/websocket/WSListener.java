@@ -26,7 +26,12 @@ public class WSListener implements ServletContextListener {
          * web.xml配置参数,websocket的endpoint包路径.逗号隔开多个
          */
         String pkgs = servletContextEvent.getServletContext().getInitParameter("WSServerEndpointPackage");
-
+        String urlPrefix = "";
+        try {
+            urlPrefix = servletContextEvent.getServletContext().getInitParameter("WSServerEndpointUrlPrefix");
+        } catch (Exception e) {
+            System.out.println("没有配置websocket的url前缀");
+        }
         Set<Class<?>> endpoints = new HashSet<>();
         System.out.println(pkgs);
         for (String pkg : pkgs.split(",")) {
@@ -39,7 +44,10 @@ public class WSListener implements ServletContextListener {
                     String url = point.value();
                     if (url != null && url.length() > 0) {
                         endpoints.add(aClass);
-                        addEndpoint(servletContextEvent, aClass, url);
+                        /**
+                         * 注册Endpoint,注意url增加了前缀
+                         */
+                        addEndpoint(servletContextEvent, aClass, urlPrefix + url);
                         System.out.println("scan Endpoint:" + aClass + ",url:" + url);
                     }
                 }

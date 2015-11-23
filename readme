@@ -32,7 +32,7 @@ websocket使用方法:
         第一种方式web容器实现.tomcat并未实现.
         第二种方式依赖过滤器WSTrigger过滤websocket请求,将HttpSession放入WSFilter.PrincipalHasSession
         在MyEndpointConfigurator中再次getUserPrincipal()并强转WSFilter.PrincipalHasSession后取出HttpSession.
-    3.注册MyEndpointConfigurator,将实现类注册到"/ws"+url的路径下
+    3.注册MyEndpointConfigurator,将实现类注册到context-param中配置的WSServerEndpointUrlPrefix+url的路径下
     4.在接收到websocket请求时,用MyEndpointConfigurator实例化WSServer的实现类.
         注意WSServer本身是一个Endpoint实现类.项目中开发者的Websocket均继承WSServer.
     5.onopen时,执行WSServer.onopen逻辑,
