@@ -48,7 +48,7 @@ public class WSListener implements ServletContextListener {
                          * 注册Endpoint,注意url增加了前缀
                          */
                         addEndpoint(servletContextEvent, aClass, urlPrefix + url);
-                        System.out.println("scan Endpoint:" + aClass + ",url:" + url);
+                        System.out.println("scan Endpoint:" + aClass + ",url:" + urlPrefix + url);
                     }
                 }
             }
