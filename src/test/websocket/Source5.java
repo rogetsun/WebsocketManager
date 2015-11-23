@@ -3,7 +3,7 @@ package test.websocket;
 import com.uv.timer.EventTriggerTask;
 import com.uv.timer.TimerUtil;
 import com.uv.websocket.WSServer;
-import com.uv.websocket.annotation.ReceiveDataType;
+import com.uv.websocket.annotation.ReceiveMsgType;
 import com.uv.websocket.annotation.WSServerPoint;
 import net.sf.json.JSONObject;
 
@@ -17,7 +17,7 @@ public class Source5 extends WSServer {
 
     private ScheduledFuture scheduledFuture;
 
-    @ReceiveDataType("random_data")
+    @ReceiveMsgType("random_data")
     public JSONObject randomAge(JSONObject data) {
         System.out.println("httpSession:" + getHttpSession());
         if (data != null) {

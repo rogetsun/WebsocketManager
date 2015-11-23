@@ -3,7 +3,7 @@ package com.uv.websocket;
 import com.uv.event.EventHandler;
 import com.uv.event.EventUtil;
 import com.uv.event.impl.EventHandlerS;
-import com.uv.websocket.annotation.ReceiveDataType;
+import com.uv.websocket.annotation.ReceiveMsgType;
 import net.sf.json.JSONObject;
 
 import javax.servlet.http.HttpSession;
@@ -104,11 +104,11 @@ public abstract class WSServer extends Endpoint {
          */
         for (final Method method : this.getClass().getDeclaredMethods()) {
             //方法是否有receiveDataType注解
-            ReceiveDataType receiveDataType = method.getAnnotation(ReceiveDataType.class);
+            ReceiveMsgType receiveMsgType = method.getAnnotation(ReceiveMsgType.class);
 
-            if (receiveDataType != null) {//有receiveDataType注解
+            if (receiveMsgType != null) {//有receiveDataType注解
 
-                final String dataType = receiveDataType.value();
+                final String dataType = receiveMsgType.value();
 
                 if (dataType != null && dataType.length() > 0) {//判断是否注解的value是合法存在的(填写了value，并且非"")
                     long id = (new Date().getTime() * 100) + ((int) (Math.random() * 100));

@@ -1,7 +1,7 @@
 package test.websocket;
 
 import com.uv.websocket.WSServer;
-import com.uv.websocket.annotation.ReceiveDataType;
+import com.uv.websocket.annotation.ReceiveMsgType;
 import com.uv.websocket.annotation.WSServerPoint;
 import net.sf.json.JSONObject;
 
@@ -12,7 +12,7 @@ import net.sf.json.JSONObject;
 @WSServerPoint("/ws/source4")
 public class Source4 extends WSServer {
 
-    @ReceiveDataType("realtime.sensor")
+    @ReceiveMsgType("realtime.sensor")
     public String realtimeSensorData(JSONObject jsonObject) {
         System.out.println("@source4:realtimeSensorData");
         System.out.println(jsonObject);
