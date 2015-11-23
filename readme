@@ -3,9 +3,15 @@
 项目配置:
     1.在web.xml中增加listener,用户web容器启动时,扫描用户编写的WSServer实现,并添加进ServerContainer.
         项目中listener默认实现:com.uv.websocket.WSListener
-    2.要在用户实现WSServer的类中getHttpSession()获得当前httpSession,需要配置filter.
+    2.web.xml中配置WSServer实现包扫描路径,多个包之间逗号隔开.param-name必须为:WSServerEndpointPackage
+        <context-param>
+            <param-name>WSServerEndpointPackage</param-name>
+            <param-value>com.uv.websocket,test.websocket</param-value>
+        </context-param>
+
+    3.要在用户实现WSServer的类中getHttpSession()获得当前httpSession,需要配置filter.
         默认实现:com.uv.websocket.WSFilter
-    3.要通过servlet给入数据,在web容器内部触发通过websocket发送给客户端,需要配置默认实现:WSTrigger到servlet
+    4.要通过servlet给入数据,在web容器内部触发通过websocket发送给客户端,需要配置默认实现:WSTrigger到servlet,path:/ws/*
         servlet接受参数:dataType, data.
         dataType为要触发的事件名称,data为数据.所以要求data为json格式.
 
@@ -17,6 +23,25 @@ websocket使用方法:
     3.新建类MyWebsocket内部编写任意名称方法JSONObject myMethod(JSONObject j),但入参为一个JSONObject,返回一个可以toString()的对象
     4.给方法myMethod添加注解@ReceiveMsgType(EventName),注解的值本质上是要启动事件监听处理器的事件名称
     5.项目内部实现事件处理器EventHandlerS,启动事件监听EventName
+
+项目逻辑:
+    1.web启动时,WSListener启动扫描context-param中配置的WSServerEndpointPackage包路径,
+        获得@WSServerEndpoint注解的WSServer实现类,以及注解url值
+    2.自定义websocket接收到请求时的生成Endpoint(websocket服务端)实例的配置类MyEndpointConfigurator,并获取session.
+        有getSession()和getUserPrincipal()两种方式.
+        第一种方式web容器实现.tomcat并未实现.
+        第二种方式依赖过滤器WSTrigger过滤websocket请求,将HttpSession放入WSFilter.PrincipalHasSession
+        在MyEndpointConfigurator中再次getUserPrincipal()并强转WSFilter.PrincipalHasSession后取出HttpSession.
+    3.注册MyEndpointConfigurator,将实现类注册到"/ws"+url的路径下
+    4.在接收到websocket请求时,用MyEndpointConfigurator实例化WSServer的实现类.
+        注意WSServer本身是一个Endpoint实现类.项目中开发者的Websocket均继承WSServer.
+    5.onopen时,执行WSServer.onopen逻辑,
+        5.1.生成websocket的发送器WSSender实例,发送器中包含一个WSCache发送缓存,然后启动发送器WSSender线程
+        5.1.即扫描当前WSServer的实现类中@ReceiveMsgType注解的方法
+        5.2.实现一个EventHandleS,在deal中调用扫描到的方法,并将返回值放入当前WSSender的WSCache中.
+        5.3.将EventHandleS注册到事件容器中,事件名称即为@ReceiveMsgType注解的value
+    6.等待接收到事件后,拿到数据放入WSCache.
+    7.onclose时,将WSCache清空关闭,将WSSender发送器线程打断.将放入事件容器的事件处理器EventHandlerS删除.
 
 常用:
     部署本项目到支持Websocket的容器,打开页面可以查看.

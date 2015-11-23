@@ -8,7 +8,7 @@
     </listener>
     <context-param>
 
-        <param-name>WSServerPointPackage</param-name>
+        <param-name>WSServerEndpointPackage</param-name>
         <param-value>com.uv.websocket,test.websocket</param-value>
 
     </context-param>

@@ -25,7 +25,7 @@ public class WSListener implements ServletContextListener {
         /**
          * web.xml配置参数,websocket的endpoint包路径.逗号隔开多个
          */
-        String pkgs = servletContextEvent.getServletContext().getInitParameter("WSServerPointPackage");
+        String pkgs = servletContextEvent.getServletContext().getInitParameter("WSServerEndpointPackage");
 
         Set<Class<?>> endpoints = new HashSet<>();
         System.out.println(pkgs);
