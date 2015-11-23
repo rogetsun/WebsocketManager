@@ -1,8 +1,10 @@
 本项目依赖EventTimer.jar
 
 项目配置:
-    1.在web.xml中增加listener,用户web容器启动时,扫描用户编写的WSServer实现,并添加进ServerContainer.项目中listener默认实现:com.uv.websocket.WSListener
-    2.要在用户实现WSServer的类中getHttpSession()获得当前httpSession,需要配置filter.默认实现:com.uv.websocket.WSFilter
+    1.在web.xml中增加listener,用户web容器启动时,扫描用户编写的WSServer实现,并添加进ServerContainer.
+        项目中listener默认实现:com.uv.websocket.WSListener
+    2.要在用户实现WSServer的类中getHttpSession()获得当前httpSession,需要配置filter.
+        默认实现:com.uv.websocket.WSFilter
     3.要通过servlet给入数据,在web容器内部触发通过websocket发送给客户端,需要配置默认实现:WSTrigger到servlet
         servlet接受参数:dataType, data.
         dataType为要触发的事件名称,data为数据.所以要求data为json格式.
