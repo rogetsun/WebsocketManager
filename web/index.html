@@ -93,6 +93,7 @@
 </body>
 <script src="assets/jquery/jquery-1.11.2.min.js"></script>
 <script src="assets/angular/angular.js"></script>
+<script src="assets/jquery/jquery-websocket.js"></script>
 <script>
     angular.module('app', []);
     angular.module('app').controller('controller1', function ($scope, $timeout, WSService) {
@@ -100,7 +101,7 @@
         var ws;
         $scope.sync = function () {
             $scope.ws = WSService.source({
-                url: '/ws/source',
+                url: '/source',
                 onmessage: function (evt) {
                     console.log(evt.data);
                     $scope.data = JSON.parse(evt.data);
@@ -119,7 +120,7 @@
         $scope.data = {};
         $scope.sync = function () {
             $scope.ws = WSService.source({
-                url: '/ws/source2',
+                url: '/source2',
                 onmessage: function (evt) {
                     console.log(evt.data);
                     $scope.data = JSON.parse(evt.data);
@@ -138,7 +139,7 @@
         $scope.data = {};
         $scope.sync = function () {
             $scope.ws = WSService.source({
-                url: '/ws/source3',
+                url: '/source3',
                 onmessage: function (evt) {
                     console.log(evt.data);
                     $scope.data = JSON.parse(evt.data);
@@ -155,7 +156,7 @@
         $scope.data = {};
         $scope.sync = function () {
             $scope.ws = WSService.source({
-                url: '/ws/source4',
+                url: '/source4',
                 onmessage: function (evt) {
                     console.log(evt.data);
                     $scope.data = JSON.parse(evt.data);
@@ -172,7 +173,7 @@
         $scope.data = {};
         $scope.sync = function () {
             $scope.ws = WSService.source({
-                url: '/ws/source5',
+                url: '/source5',
                 onmessage: function (evt) {
                     console.log(evt.data);
                     $scope.data = JSON.parse(evt.data);
@@ -190,29 +191,30 @@
     angular.module('app').service('WSService', function () {
         var _this = this;
         this.source = function (cb) {
-            var host = window.location.host;
-            var path = window.location.pathname;
-            var webp = path.substring(0, path.substring(1).indexOf("/") + 1);
-            var url = "ws://" + host + webp + (cb.url || "/ws/source?abc=songyw");
-            console.log(url);
-            var ws = _this.ws = new WebSocket(url);
-            ws.onopen = function (evt) {
-                console.log('WSService:opened');
-                cb.onopen && cb.onopen(evt);
-                cb.data && ws.send(JSON.stringify(cb.data));
-            };
-            ws.onmessage = function (evt) {
-                console.log('WSService:message');
-                cb.onmessage && cb.onmessage(evt);
-            };
-            ws.onclose = function (evt) {
-                console.log('WSService:closed');
-                cb.onclose && cb.onclose(evt);
-            };
-            ws.onerror = function (evt) {
-                console.log('WSService:error');
-                cb.onerror && cb.onerror(evt);
-            };
+            $.websocket(cb.url || "source", cb);
+//            var host = window.location.host;
+//            var path = window.location.pathname;
+//            var webp = path.substring(0, path.substring(1).indexOf("/") + 1);
+//            var url = "ws://" + host + webp + (cb.url || "/ws/source?abc=songyw");
+//            console.log(url);
+//            var ws = _this.ws = new WebSocket(url);
+//            ws.onopen = function (evt) {
+//                console.log('WSService:opened');
+//                cb.onopen && cb.onopen(evt);
+//                cb.data && ws.send(JSON.stringify(cb.data));
+//            };
+//            ws.onmessage = function (evt) {
+//                console.log('WSService:message');
+//                cb.onmessage && cb.onmessage(evt);
+//            };
+//            ws.onclose = function (evt) {
+//                console.log('WSService:closed');
+//                cb.onclose && cb.onclose(evt);
+//            };
+//            ws.onerror = function (evt) {
+//                console.log('WSService:error');
+//                cb.onerror && cb.onerror(evt);
+//            };
 
 //            ws.send(cb.data || "{}");
             return ws;
