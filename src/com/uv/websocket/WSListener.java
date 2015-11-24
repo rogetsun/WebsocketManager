@@ -25,35 +25,38 @@ public class WSListener implements ServletContextListener {
         /**
          * web.xml配置参数,websocket的endpoint包路径.逗号隔开多个
          */
-        String pkgs = servletContextEvent.getServletContext().getInitParameter("WSServerEndpointPackage");
-        String urlPrefix = "";
         try {
-            urlPrefix = servletContextEvent.getServletContext().getInitParameter("WSServerEndpointUrlPrefix");
-        } catch (Exception e) {
-            System.out.println("没有配置websocket的url前缀");
-        }
-        Set<Class<?>> endpoints = new HashSet<>();
-        System.out.println(pkgs);
-        for (String pkg : pkgs.split(",")) {
-            /**
-             * 递归扫描每个包下面有WSServerPoint注解的类,认为是endpoint实现类
-             */
-            for (Class<?> aClass : ScanClassUtil.getClasses(pkg)) {
-                WSServerEndpoint point = aClass.getAnnotation(WSServerEndpoint.class);
-                if (point != null) {
-                    String url = point.value();
-                    if (url != null && url.length() > 0) {
-                        endpoints.add(aClass);
-                        /**
-                         * 注册Endpoint,注意url增加了前缀
-                         */
-                        addEndpoint(servletContextEvent, aClass, urlPrefix + url);
-                        System.out.println("scan Endpoint:" + aClass + ",url:" + urlPrefix + url);
+            String pkgs = servletContextEvent.getServletContext().getInitParameter("WSServerEndpointPackage");
+            String urlPrefix = "";
+            try {
+                urlPrefix = servletContextEvent.getServletContext().getInitParameter("WSServerEndpointUrlPrefix");
+            } catch (Exception e) {
+                System.out.println("没有配置websocket的url前缀");
+            }
+            Set<Class<?>> endpoints = new HashSet<>();
+            System.out.println(pkgs);
+            for (String pkg : pkgs.split(",")) {
+                /**
+                 * 递归扫描每个包下面有WSServerPoint注解的类,认为是endpoint实现类
+                 */
+                for (Class<?> aClass : ScanClassUtil.getClasses(pkg)) {
+                    WSServerEndpoint point = aClass.getAnnotation(WSServerEndpoint.class);
+                    if (point != null) {
+                        String url = point.value();
+                        if (url != null && url.length() > 0) {
+                            endpoints.add(aClass);
+                            /**
+                             * 注册Endpoint,注意url增加了前缀
+                             */
+                            addEndpoint(servletContextEvent, aClass, urlPrefix + url);
+                            System.out.println("scan Endpoint:" + aClass + ",url:" + urlPrefix + url);
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     /**
