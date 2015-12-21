@@ -127,7 +127,8 @@ public abstract class WSServer extends Endpoint {
                                     /**
                                      * 将msg.toString()放进websocket的发送缓存
                                      */
-                                    cache.push(msg.toString());
+                                    if (null != msg)
+                                        cache.push(msg.toString());
                                 } else {
                                     getEventEmitter().remove(dataType, this);
                                 }
