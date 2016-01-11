@@ -32,6 +32,16 @@
         }
     }
 
+    /**
+     * 关闭websocket
+     * @param code
+     * @param reason
+     */
+    WS.prototype.close = function (code, reason) {
+        this.websocket.close(code, reason);
+    };
+
+
     $.extend({
         websocket: function (url, callbacks) {
             return new WS(url, callbacks);
