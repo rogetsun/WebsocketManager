@@ -191,7 +191,7 @@
     angular.module('app').service('WSService', function () {
         var _this = this;
         this.source = function (cb) {
-            $.websocket(cb.url || "source", cb);
+            return $.websocket(cb.url || "source", cb);
 //            var host = window.location.host;
 //            var path = window.location.pathname;
 //            var webp = path.substring(0, path.substring(1).indexOf("/") + 1);
@@ -217,7 +217,7 @@
 //            };
 
 //            ws.send(cb.data || "{}");
-            return ws;
+//            return ws;
         }
     });
 
