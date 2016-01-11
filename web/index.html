@@ -180,6 +180,7 @@
                     $scope.$digest();
                 }
             });
+            console.log($scope.ws);
         };
         $scope.disconn = function () {
             $scope.ws.close(3123, "i am disconnect");
