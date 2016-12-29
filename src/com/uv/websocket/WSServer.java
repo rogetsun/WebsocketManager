@@ -5,12 +5,19 @@ import com.uv.event.EventUtil;
 import com.uv.event.impl.EventHandlerS;
 import com.uv.websocket.annotation.ReceiveMsgType;
 import net.sf.json.JSONObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +27,7 @@ import java.util.Map;
  * Created by uv2sun on 15/11/22.
  */
 public abstract class WSServer extends Endpoint {
+    private static final Log log = LogFactory.getLog(WSServer.class);
     /**
      * 从当前类的基层类启动的事件处理器
      * key:事件名称,value：EventHandler
@@ -70,6 +78,11 @@ public abstract class WSServer extends Endpoint {
          * 由ReceiveDataType注解的value()指定事件名称,注解的方法处理事件
          */
         this.addRecevieDataTypeMethod2Event(wsServer, cache);
+
+        /**
+         * 检查当前类属性有Resource或Autowired注解的，从spring上下文注入管理的bean
+         */
+        this.injectPropertyBySpring();
         /**
          * 自定义websocket启动时操作
          */
@@ -144,6 +157,26 @@ public abstract class WSServer extends Endpoint {
         }
     }
 
+    /**
+     * 注入spring容器管理的bean
+     * 遍历所有继承当前类的子类的属性，如果有Resource或Autowired的注解，将从spring上下文中获取并注入
+     */
+    private void injectPropertyBySpring() {
+        try {
+            Class.forName("org.springframework.web.context.support.WebApplicationContextUtils");
+            WebApplicationContext ac = WebApplicationContextUtils.getRequiredWebApplicationContext(
+                    this.getHttpSession().getServletContext());
+
+            Field[] fields = this.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                if (field.getAnnotationsByType(Resource.class).length > 0 || field.getAnnotationsByType(Autowired.class).length > 0) {
+                    field.setAccessible(true);
+                    field.set(this, ac.getBean(field.getType()));
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
 
     public HttpSession getHttpSession() {
         return this.httpSession;
