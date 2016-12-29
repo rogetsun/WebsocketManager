@@ -164,7 +164,7 @@ public abstract class WSServer extends Endpoint {
      */
     private void injectPropertyBySpring() {
         try {
-            Class.forName("org.springframework.web.context.support.WebApplicationContextUtils");
+//            Class.forName("org.springframework.web.context.support.WebApplicationContextUtils");
             WebApplicationContext ac = WebApplicationContextUtils.getRequiredWebApplicationContext(
                     this.getHttpSession().getServletContext());
 
