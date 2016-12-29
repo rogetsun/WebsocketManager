@@ -80,6 +80,7 @@ public abstract class WSServer extends Endpoint {
         this.addRecevieDataTypeMethod2Event(wsServer, cache);
 
         /**
+         * 如果当前web应用环境有spring
          * 检查当前类属性有Resource或Autowired注解的，从spring上下文注入管理的bean
          */
         this.injectPropertyBySpring();
