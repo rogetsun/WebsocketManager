@@ -48,7 +48,8 @@ websocket使用方法:
     部署本项目到支持Websocket的容器,打开页面可以查看.
     test.websocket.source4, test.websocket.source5为测试实现
 
-
+20170104
+    增加WSServer继承类用@resource,@autowired注入spring-bean。
 
 
 
