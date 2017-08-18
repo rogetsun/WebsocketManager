@@ -51,5 +51,8 @@ websocket使用方法:
 20170104
     增加WSServer继承类用@resource,@autowired注入spring-bean。
 
+20170818
+    增加WSServer内获取当前 webSocket 被请求时带的 RequestParameter
+
 
 

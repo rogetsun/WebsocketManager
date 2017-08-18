@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +34,12 @@ public abstract class WSServer extends Endpoint {
      * key:事件名称,value：EventHandler
      */
     private Map<String, EventHandler> eventHandlerMap = new HashMap<>();
+    
+    /**
+     * 当前websocket被请求时，给的url参数
+     */
+    private Map<String, List<String>> requestParam;
+    
     /**
      * 当前web容器的session
      */
@@ -41,21 +48,22 @@ public abstract class WSServer extends Endpoint {
      * websocket数据发送器启动后的线程
      */
     private Thread wsSenderThread;
-
+    
     /**
      * 自定义websocket关闭时调用
      */
     public void onDestroy() {
     }
-
+    
     /**
      * 自定义websocket打开时调用
      */
     public void onInit() {
     }
-
+    
     @Override
     public void onOpen(final Session session, EndpointConfig endpointConfig) {
+        this.setRequestParam(session.getRequestParameterMap());
         WSServer wsServer = this;
         this.httpSession = (HttpSession) endpointConfig.getUserProperties().get(HttpSession.class.getName());
         /**
@@ -71,14 +79,14 @@ public abstract class WSServer extends Endpoint {
          */
         this.wsSenderThread = new Thread(wsSender);
         this.wsSenderThread.start();
-
+        
         /**
          * 启动事件监听处理器,处理结果发送到当前websocket数据发送器的缓存
          *
          * 由ReceiveDataType注解的value()指定事件名称,注解的方法处理事件
          */
         this.addRecevieDataTypeMethod2Event(wsServer, cache);
-
+        
         /**
          * 如果当前web应用环境有spring
          * 检查当前类属性有Resource或Autowired注解的，从spring上下文注入管理的bean
@@ -89,8 +97,8 @@ public abstract class WSServer extends Endpoint {
          */
         this.onInit();
     }
-
-
+    
+    
     @Override
     public void onClose(Session session, CloseReason closeReason) {
         for (Map.Entry<String, EventHandler> ehEntry : eventHandlerMap.entrySet()) {
@@ -100,8 +108,8 @@ public abstract class WSServer extends Endpoint {
         wsSenderThread.interrupt();
         this.onDestroy();
     }
-
-
+    
+    
     /**
      * 将ReceiveDataType注解的方法注册到事件
      * desc:
@@ -119,11 +127,11 @@ public abstract class WSServer extends Endpoint {
         for (final Method method : this.getClass().getDeclaredMethods()) {
             //方法是否有receiveDataType注解
             ReceiveMsgType receiveMsgType = method.getAnnotation(ReceiveMsgType.class);
-
+            
             if (receiveMsgType != null) {//有receiveDataType注解
-
+                
                 final String dataType = receiveMsgType.value();
-
+                
                 if (dataType != null && dataType.length() > 0) {//判断是否注解的value是合法存在的(填写了value，并且非"")
                     long id = (new Date().getTime() * 100) + ((int) (Math.random() * 100));
                     /**
@@ -157,7 +165,7 @@ public abstract class WSServer extends Endpoint {
             }
         }
     }
-
+    
     /**
      * 注入spring容器管理的bean
      * 遍历所有继承当前类的子类的属性，如果有Resource或Autowired的注解，将从spring上下文中获取并注入
@@ -167,7 +175,7 @@ public abstract class WSServer extends Endpoint {
 //            Class.forName("org.springframework.web.context.support.WebApplicationContextUtils");
             WebApplicationContext ac = WebApplicationContextUtils.getRequiredWebApplicationContext(
                     this.getHttpSession().getServletContext());
-
+            
             Field[] fields = this.getClass().getDeclaredFields();
             for (Field field : fields) {
                 if (field.getAnnotationsByType(Resource.class).length > 0 || field.getAnnotationsByType(Autowired.class).length > 0) {
@@ -178,8 +186,16 @@ public abstract class WSServer extends Endpoint {
         } catch (Exception e) {
         }
     }
-
+    
     public HttpSession getHttpSession() {
         return this.httpSession;
+    }
+    
+    public Map<String, List<String>> getRequestParam() {
+        return requestParam;
+    }
+    
+    public void setRequestParam(Map<String, List<String>> requestParam) {
+        this.requestParam = requestParam;
     }
 }
