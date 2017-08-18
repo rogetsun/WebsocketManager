@@ -20,7 +20,7 @@ websocket使用方法:
 
     1.新建类MyWebsocket继承WSServer
     2.增加类注解@WSServerEndpoint(url)
-    3.新建类MyWebsocket内部编写任意名称方法JSONObject myMethod(JSONObject j),但入参为一个JSONObject,返回一个可以toString()的对象
+    3.新建类MyWebsocket内部编写任意名称方法JSONObject myMethod(JSONObject j),但入参为一个JSONObject(事件被触发的数据),返回一个可以toString()的对象
     4.给方法myMethod添加注解@ReceiveMsgType(EventName),注解的值本质上是要启动事件监听处理器的事件名称
     5.项目内部实现事件处理器EventHandlerS,启动事件监听EventName
 
