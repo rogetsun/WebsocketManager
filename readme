@@ -52,7 +52,7 @@ websocket使用方法:
     增加WSServer继承类用@resource,@autowired注入spring-bean。
 
 20170818
-    增加WSServer内获取当前 webSocket 被请求时带的 RequestParameter
-
+    1、增加WSServer内获取当前 webSocket 被请求时带的 RequestParameter
+    2、增加支持WSServer的子类的方法的@ReceiveMsgType注解的值可以为类似url占位符：{key}。并且在注册事件时，将@ReceiveMsgType.value()中的占位符替换为WSServer被请求时的请求中的参数key的值。
 
 

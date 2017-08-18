@@ -23,12 +23,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by uv2sun on 15/11/22.
  */
 public abstract class WSServer extends Endpoint {
     private static final Log log = LogFactory.getLog(WSServer.class);
+    
+    private static final Pattern URL_PARAM_KEY_PATTERN = Pattern.compile("(?<=\\{)([^\\}]+)(?=\\})");
+    
+    
     /**
      * 从当前类的基层类启动的事件处理器
      * key:事件名称,value：EventHandler
@@ -111,11 +117,13 @@ public abstract class WSServer extends Endpoint {
     
     
     /**
-     * 将ReceiveDataType注解的方法注册到事件
+     * 将ReceiveMsgType注解的方法注册到事件
      * desc:
-     * 如果用户实现的本类的子类中有ReceiveDataType注解的方法
+     * 如果用户实现的本类的子类中有ReceiveMsgType注解的方法
      * 则实例化一个EventHandler,并在EventHandler的实现方法deal中调用此注解方法,
      * 然后将EventHandler实例EventUtil.on()到事件容器中,on的事件名称即为ReceiveDataType的value
+     * <p>
+     * 20170818增加ReceiveMsgType的值可以包含{key}。key即为请求中的参数的key。并且会替换{key}
      *
      * @param wsServer
      * @param cache
@@ -130,13 +138,18 @@ public abstract class WSServer extends Endpoint {
             
             if (receiveMsgType != null) {//有receiveDataType注解
                 
-                final String dataType = receiveMsgType.value();
+                String dataType = receiveMsgType.value();
                 
-                if (dataType != null && dataType.length() > 0) {//判断是否注解的value是合法存在的(填写了value，并且非"")
+                if (dataType.length() > 0) {//判断是否注解的value是合法存在的(填写了value，并且非"")
+                    
+                    //替换dataType中的{key}为请求参数中的参数
+                    dataType = this.urlParamReplace(dataType);
+                    
                     long id = (new Date().getTime() * 100) + ((int) (Math.random() * 100));
                     /**
-                     * 增加ReceiveDataType.value()为名称的事件,事件deal里执行注解的方法
+                     * 增加ReceiveMsgType.value()为名称的事件,事件deal里执行注解的方法
                      */
+                    String finalDataType = dataType;
                     EventHandler eventHandler = new EventHandlerS(id) {
                         @Override
                         public void deal(String s, JSONObject jsonObject) {
@@ -152,7 +165,7 @@ public abstract class WSServer extends Endpoint {
                                     if (null != msg)
                                         cache.push(msg.toString());
                                 } else {
-                                    getEventEmitter().remove(dataType, this);
+                                    getEventEmitter().remove(finalDataType, this);
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -164,6 +177,28 @@ public abstract class WSServer extends Endpoint {
                 }
             }
         }
+    }
+    
+    /**
+     * 将url中的{key}替换为request.getParam(key)
+     * 当前使用用来将ReceiveMsgType中给定的事件名称中，如果有要替换的内容，则从当前websocket被请求的请求中寻找参数key，并替换
+     * 如果请求参数中没有key，则替换为空字符串
+     *
+     * @param url
+     * @return
+     */
+    private String urlParamReplace(String url) {
+        Matcher matcher = URL_PARAM_KEY_PATTERN.matcher(url);
+        while (matcher.find()) {
+            String paramKey = matcher.group();
+            List<String> paramValues = this.getRequestParam().get(paramKey);
+            if (paramValues != null && paramValues.size() > 0) {
+                url = url.replaceAll("\\{" + paramKey + "\\}", paramValues.get(0));
+            } else {
+                url = url.replaceAll("\\{" + paramKey + "\\}", "");
+            }
+        }
+        return url;
     }
     
     /**
