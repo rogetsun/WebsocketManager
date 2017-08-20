@@ -14,14 +14,14 @@ public class Test {
         m.put("x1", "111111");
         m.put("x2", "22222");
         
-        String a = "a/{x1}/{x2}";
+        String a = "a@{x1}|{x2}@{x3}";
         Matcher matcher = p.matcher(a);
         while (matcher.find()) {
             String key = matcher.group();
             System.out.println(key);
-            a.replaceAll("\\{" + key + "\\}", m.get(key));
+            a = a.replaceAll("\\{" + key + "\\}", m.getOrDefault(key, ""));
         }
-    
+        
         System.out.println(a);
     }
 }

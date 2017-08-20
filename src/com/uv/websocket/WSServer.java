@@ -198,6 +198,9 @@ public abstract class WSServer extends Endpoint {
                 url = url.replaceAll("\\{" + paramKey + "\\}", "");
             }
         }
+        if (url.endsWith(EventUtil.EVENT_PROPAGATION_SEQ) || url.endsWith(EventUtil.EVENT_NO_PROPAGATION_SEQ)) {
+            url = url.substring(0, url.length() - 1);
+        }
         return url;
     }
     
