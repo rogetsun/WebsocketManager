@@ -84,6 +84,7 @@ public abstract class WSServer extends Endpoint {
          * 启动发送器
          */
         this.wsSenderThread = new Thread(wsSender);
+        this.wsSenderThread.setDaemon(true);
         this.wsSenderThread.start();
         
         /**
