@@ -2,20 +2,15 @@ package com.uv.websocket;
 
 import com.uv.util.ScanClassUtil;
 import com.uv.websocket.annotation.WSServerEndpoint;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSession;
 import javax.websocket.DeploymentException;
-import javax.websocket.Endpoint;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by uv2sun on 15/11/22.
@@ -51,7 +46,7 @@ public class WSListener implements ServletContextListener {
                             /**
                              * 注册Endpoint,注意url增加了前缀
                              */
-                            addEndpoint(servletContextEvent, aClass, urlPrefix + url);
+                            addEndpoint(servletContextEvent, aClass, urlPrefix, url);
                             System.out.println("scan Endpoint:" + aClass + ",url:" + urlPrefix + url);
                         }
                     }
@@ -70,7 +65,19 @@ public class WSListener implements ServletContextListener {
      * @param aClass
      * @param url
      */
-    private void addEndpoint(ServletContextEvent servletContextEvent, Class<?> aClass, String url) {
+    private void addEndpoint(ServletContextEvent servletContextEvent, Class<?> aClass, String urlPrefix, String url) {
+        /**
+         * 拼接最终的URL
+         */
+        String URL;
+        if ((urlPrefix.endsWith("/") && !url.startsWith("/"))
+                || (!urlPrefix.endsWith("/") && url.startsWith("/"))) {
+            URL = urlPrefix + url;
+        } else if (!urlPrefix.endsWith("/") && !url.startsWith("/")) {
+            URL = urlPrefix + "/" + url;
+        } else {
+            URL = urlPrefix + url.substring(1);
+        }
         /**
          * 从servletContext中取得服务容器
          */
@@ -80,7 +87,7 @@ public class WSListener implements ServletContextListener {
          * 生成endpoint实现类
          */
         ServerEndpointConfig sec = ServerEndpointConfig.Builder
-                .create(aClass, url)
+                .create(aClass, URL)
                 .configurator(new MyEndpointConfigurator())     //增加httpSession到userProperties
                 .build();
         /**
