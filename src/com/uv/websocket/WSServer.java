@@ -133,7 +133,7 @@ public abstract class WSServer extends Endpoint {
         /**
          * 获取当前websocket的Endpoint实现类中,用户继承本类定义的接受数据类型方法
          */
-        for (final Method method : this.getClass().getDeclaredMethods()) {
+        for (final Method method : this.getClass().getMethods()) {
             //方法是否有receiveDataType注解
             ReceiveMsgType receiveMsgType = method.getAnnotation(ReceiveMsgType.class);
             
