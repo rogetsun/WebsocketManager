@@ -55,4 +55,10 @@ websocket使用方法:
     1、增加WSServer内获取当前 webSocket 被请求时带的 RequestParameter
     2、增加支持WSServer的子类的方法的@ReceiveMsgType注解的值可以为类似url占位符：{key}。并且在注册事件时，将@ReceiveMsgType.value()中的占位符替换为WSServer被请求时的请求中的参数key的值。
 
+20170827
+    1、修改WSListener，扫描带@WSServerEndpoint注解的WSServer实现类时过滤掉接口。
+    2、修改@ReceiveMsgType注解为可以继承的。
+        这样可以写带有单一功能的接口default方法(带@ReceiveMsgType注解的)。
+        然后子类implement多个接口，获取到多种数据。但是子类无需实现任何方法。
+        当然，子类同时要extend WSServer类，并且增加@WSServerEndpoint注解，指定webSocket请求地址。
 
