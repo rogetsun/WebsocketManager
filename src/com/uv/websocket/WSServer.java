@@ -57,14 +57,20 @@ public abstract class WSServer extends Endpoint {
     
     /**
      * 自定义websocket关闭时调用
+     *
+     * @param session
+     * @param closeReason
      */
-    public void onDestroy() {
+    public void onDestroy(Session session, CloseReason closeReason) {
     }
     
     /**
      * 自定义websocket打开时调用
+     *
+     * @param session
+     * @param wsSender
      */
-    public void onInit() {
+    public void onInit(Session session, WSSender wsSender) {
     }
     
     @Override
@@ -102,7 +108,7 @@ public abstract class WSServer extends Endpoint {
         /**
          * 自定义websocket启动时操作
          */
-        this.onInit();
+        this.onInit(session, wsSender);
     }
     
     
@@ -113,7 +119,7 @@ public abstract class WSServer extends Endpoint {
         }
         eventHandlerMap.clear();
         wsSenderThread.interrupt();
-        this.onDestroy();
+        this.onDestroy(session, closeReason);
     }
     
     
