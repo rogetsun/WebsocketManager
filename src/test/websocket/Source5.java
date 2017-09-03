@@ -2,12 +2,15 @@ package test.websocket;
 
 import com.uv.timer.EventTriggerTask;
 import com.uv.timer.TimerUtil;
+import com.uv.websocket.WSSender;
 import com.uv.websocket.WSServer;
 import com.uv.websocket.annotation.ReceiveMsgType;
 import com.uv.websocket.annotation.WSServerEndpoint;
 import com.uv.websocket.message.MessageType;
 import net.sf.json.JSONObject;
 
+import javax.websocket.CloseReason;
+import javax.websocket.Session;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -28,13 +31,13 @@ public class Source5 extends WSServer {
     }
 
     @Override
-    public void onInit() {
+    public void onInit(Session session, WSSender wsSender) {
         ScheduledFuture future = TimerUtil.interval(new EventTriggerTask(MessageType.MESSAGE), 1000, 1000);
         this.scheduledFuture = future;
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy(Session session, CloseReason closeReason) {
         System.out.println("onDestory cancel scheduledFuture");
         this.scheduledFuture.cancel(true);
     }

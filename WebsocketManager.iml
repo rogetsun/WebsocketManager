@@ -42,8 +42,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="json-lib" level="application" />
-    <orderEntry type="library" name="Spring MVC-4.2.5.RELEASE" level="application" />
-    <orderEntry type="library" name="Spring-4.2.5.RELEASE" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="json-lib" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="Spring MVC-4.2.5.RELEASE" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="Spring-4.2.5.RELEASE" level="application" />
   </component>
 </module>

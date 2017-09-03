@@ -3,6 +3,7 @@ package com.uv.websocket;
 import com.uv.event.EventHandler;
 import com.uv.event.EventUtil;
 import com.uv.event.impl.EventHandlerS;
+import com.uv.util.EventNameUtil;
 import com.uv.websocket.annotation.ReceiveMsgType;
 import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
@@ -23,17 +24,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by uv2sun on 15/11/22.
  */
 public abstract class WSServer extends Endpoint {
     private static final Log log = LogFactory.getLog(WSServer.class);
-    
-    private static final Pattern URL_PARAM_KEY_PATTERN = Pattern.compile("(?<=\\{)([^\\}]+)(?=\\})");
-    
     
     /**
      * 从当前类的基层类启动的事件处理器
@@ -115,7 +111,7 @@ public abstract class WSServer extends Endpoint {
     @Override
     public void onClose(Session session, CloseReason closeReason) {
         for (Map.Entry<String, EventHandler> ehEntry : eventHandlerMap.entrySet()) {
-            EventUtil.remove(ehEntry.getKey(), ehEntry.getValue());
+            EventUtil.remove(ehEntry.getKey());
         }
         eventHandlerMap.clear();
         wsSenderThread.interrupt();
@@ -150,13 +146,12 @@ public abstract class WSServer extends Endpoint {
                 if (dataType.length() > 0) {//判断是否注解的value是合法存在的(填写了value，并且非"")
                     
                     //替换dataType中的{key}为请求参数中的参数
-                    dataType = this.urlParamReplace(dataType);
+                    List<String> dataTypeList = EventNameUtil.eventNameParamReplace(dataType, this.getRequestParam());
                     
                     long id = (new Date().getTime() * 100) + ((int) (Math.random() * 100));
                     /**
                      * 增加ReceiveMsgType.value()为名称的事件,事件deal里执行注解的方法
                      */
-                    String finalDataType = dataType;
                     EventHandler eventHandler = new EventHandlerS(id) {
                         @Override
                         public void deal(String s, JSONObject jsonObject) {
@@ -172,44 +167,24 @@ public abstract class WSServer extends Endpoint {
                                     if (null != msg)
                                         cache.push(msg.toString());
                                 } else {
-                                    getEventEmitter().remove(finalDataType, this);
+//                                    this.getEventEmitter().remove(finalDataType, this);
+                                    dataTypeList.forEach(dt -> this.getEventEmitter().remove(dt));
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     };
-                    this.eventHandlerMap.put(dataType, eventHandler);
-                    EventUtil.on(dataType, eventHandler);
+//                    this.eventHandlerMap.put(dataType, eventHandler);
+                    dataTypeList.forEach(dt -> this.eventHandlerMap.put(dt, eventHandler));
+//                    EventUtil.on(dataType, eventHandler);
+                    dataTypeList.forEach(dt -> EventUtil.on(dt, eventHandler));
+                    
                 }
             }
         }
     }
     
-    /**
-     * 将url中的{key}替换为request.getParam(key)
-     * 当前使用用来将ReceiveMsgType中给定的事件名称中，如果有要替换的内容，则从当前websocket被请求的请求中寻找参数key，并替换
-     * 如果请求参数中没有key，则替换为空字符串
-     *
-     * @param url
-     * @return
-     */
-    private String urlParamReplace(String url) {
-        Matcher matcher = URL_PARAM_KEY_PATTERN.matcher(url);
-        while (matcher.find()) {
-            String paramKey = matcher.group();
-            List<String> paramValues = this.getRequestParam().get(paramKey);
-            if (paramValues != null && paramValues.size() > 0) {
-                url = url.replaceAll("\\{" + paramKey + "\\}", paramValues.get(0));
-            } else {
-                url = url.replaceAll("\\{" + paramKey + "\\}", "");
-            }
-        }
-        if (url.endsWith(EventUtil.EVENT_PROPAGATION_SEQ) || url.endsWith(EventUtil.EVENT_NO_PROPAGATION_SEQ)) {
-            url = url.substring(0, url.length() - 1);
-        }
-        return url;
-    }
     
     /**
      * 注入spring容器管理的bean
@@ -243,4 +218,6 @@ public abstract class WSServer extends Endpoint {
     public void setRequestParam(Map<String, List<String>> requestParam) {
         this.requestParam = requestParam;
     }
+    
+    
 }
