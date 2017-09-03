@@ -62,3 +62,11 @@ websocket使用方法:
         然后子类implement多个接口，获取到多种数据。但是子类无需实现任何方法。
         当然，子类同时要extend WSServer类，并且增加@WSServerEndpoint注解，指定webSocket请求地址。
 
+20170903
+    修改@ReceiveMsgType注解的事件名称中的占位符参数可以在请求中给多个。会生成多个事件名称，用同一个事件处理器。
+    eg：
+        @ReceiveMsgType("en/{id}/{type}")
+        假如request中url=/xxxxx?id=1&id=2&type=t1&type=t2，id给了2个值：1，2;type也给了2个值："t1","t2"
+        则生成4个事件名称：
+            "en/1/t1","en/1/t2","en/2/t1","en/2/t2"
+        使用同一个事件处理器：@ReceiveMsgType注解的方法
