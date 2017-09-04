@@ -1,6 +1,8 @@
 package com.uv.util;
 
 import com.uv.event.EventUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EventNameUtil {
+    
+    private static final Log log = LogFactory.getLog(EventNameUtil.class);
     
     //匹配{key}的正则表达式
     public static final Pattern EVENT_NAME_PARAM_KEY_PATTERN = Pattern.compile("(?<=\\{)([^\\}]+)(?=\\})");
@@ -57,7 +61,7 @@ public class EventNameUtil {
             }
             l.add(en);
         });
-        
+        log.debug("EventNameList:" + l);
         return l;
     }
     
