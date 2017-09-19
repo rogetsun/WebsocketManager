@@ -1,5 +1,5 @@
 本项目依赖EventTimer.jar
-
+ 
 项目配置:
     1.在web.xml中增加listener,用户web容器启动时,扫描用户编写的WSServer实现,并添加进ServerContainer.
         项目中listener默认实现:com.uv.websocket.WSListener
