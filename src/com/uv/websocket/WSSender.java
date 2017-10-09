@@ -1,5 +1,8 @@
 package com.uv.websocket;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.websocket.Session;
 
 /**
@@ -7,8 +10,16 @@ import javax.websocket.Session;
  * websocket 处理器
  */
 public class WSSender implements Runnable {
+
+    private static final Log log = LogFactory.getLog(WSSender.class);
+
     private WSCache<String> wsCache;
     private Session session;
+
+    public WSSender(WSCache<String> wsCache, Session session) {
+        this.wsCache = wsCache;
+        this.session = session;
+    }
 
     @Override
     public void run() {
@@ -21,11 +32,6 @@ public class WSSender implements Runnable {
             }
         }
         wsCache.close();
-    }
-
-    public WSSender(WSCache<String> wsCache, Session session) {
-        this.wsCache = wsCache;
-        this.session = session;
     }
 
     public WSCache<String> getWsCache() {
