@@ -57,7 +57,7 @@ public abstract class WSServer extends Endpoint {
      * @param session
      * @param closeReason
      */
-    public void onDestroy(Session session, CloseReason closeReason) {
+    public void onDestroy(Session session, CloseReason closeReason) throws Exception {
     }
 
     /**
@@ -107,8 +107,7 @@ public abstract class WSServer extends Endpoint {
         try {
             this.onInit(session, wsSender);
         } catch (Exception e) {
-            //todo 细化报错内容
-            log.error(this, e);
+            log.error("onOpen error," + this, e);
         }
     }
 
@@ -120,7 +119,11 @@ public abstract class WSServer extends Endpoint {
         }
         eventHandlerMap.clear();
         wsSenderThread.interrupt();
-        this.onDestroy(session, closeReason);
+        try {
+            this.onDestroy(session, closeReason);
+        } catch (Exception e) {
+            log.error("close error, " + this, e);
+        }
     }
 
 
