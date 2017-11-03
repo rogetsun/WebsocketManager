@@ -115,7 +115,7 @@ public abstract class WSServer extends Endpoint {
     @Override
     public void onClose(Session session, CloseReason closeReason) {
         for (Map.Entry<String, EventHandler> ehEntry : eventHandlerMap.entrySet()) {
-            EventUtil.remove(ehEntry.getKey());
+            EventUtil.remove(ehEntry.getKey(), ehEntry.getValue());
         }
         eventHandlerMap.clear();
         wsSenderThread.interrupt();
