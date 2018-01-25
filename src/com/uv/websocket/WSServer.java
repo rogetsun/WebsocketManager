@@ -96,7 +96,7 @@ public abstract class WSServer extends Endpoint {
          * 如果当前web应用环境有spring
          * 检查当前类属性有Resource或Autowired注解的，从spring上下文注入管理的bean
          */
-        this.injectPropertyBySpring();
+//        this.injectPropertyBySpring();
         /**
          * 自定义websocket启动时操作
          */
@@ -199,17 +199,20 @@ public abstract class WSServer extends Endpoint {
      */
     private void injectPropertyBySpring() {
         try {
+            System.out.println(this.getHttpSession().getServletContext());
             WebApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(
                     this.getHttpSession().getServletContext());
-
+            System.out.println("spring WebApplicationContext:" + ac);
             Field[] fields = this.getClass().getDeclaredFields();
             for (Field field : fields) {
                 if (field.getAnnotationsByType(Resource.class).length > 0 || field.getAnnotationsByType(Autowired.class).length > 0) {
+                    System.out.println("spring inject field:" + field);
                     field.setAccessible(true);
                     field.set(this, ac.getBean(field.getType()));
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
