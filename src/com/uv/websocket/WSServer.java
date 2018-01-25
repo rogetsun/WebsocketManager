@@ -14,13 +14,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import javax.websocket.CloseReason;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Session;
+import javax.websocket.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,6 +107,10 @@ public abstract class WSServer extends Endpoint {
         }
     }
 
+    @OnMessage
+    public void onMessage(String message, Session session) {
+
+    }
 
     @Override
     public void onClose(Session session, CloseReason closeReason) {
@@ -146,17 +146,17 @@ public abstract class WSServer extends Endpoint {
         for (final Method method : this.getClass().getMethods()) {
             //方法是否有receiveDataType注解
             ReceiveMsgType receiveMsgType = method.getAnnotation(ReceiveMsgType.class);
-
-            if (receiveMsgType != null) {//有receiveDataType注解
+            //有receiveDataType注解
+            if (receiveMsgType != null) {
 
                 String dataType = receiveMsgType.value();
-
-                if (dataType.length() > 0) {//判断是否注解的value是合法存在的(填写了value，并且非"")
+                //判断是否注解的value是合法存在的(填写了value，并且非"")
+                if (dataType.length() > 0) {
 
                     //替换dataType中的{key}为请求参数中的参数
                     List<String> dataTypeList = EventNameUtil.eventNameParamReplace(dataType, this.getRequestParam());
 
-                    long id = (new Date().getTime() * 100) + ((int) (Math.random() * 100));
+                    long id = (System.currentTimeMillis() * 100) + ((int) (Math.random() * 100));
                     /**
                      * 增加ReceiveMsgType.value()为名称的事件,事件deal里执行注解的方法
                      */
@@ -173,10 +173,10 @@ public abstract class WSServer extends Endpoint {
                                     /**
                                      * 将msg.toString()放进websocket的发送缓存
                                      */
-                                    if (null != msg)
+                                    if (null != msg) {
                                         cache.push(msg.toString());
+                                    }
                                 } else {
-//                                    this.getEventEmitter().remove(finalDataType, this);
                                     dataTypeList.forEach(dt -> this.getEventEmitter().remove(dt));
                                 }
                             } catch (Exception e) {
@@ -184,9 +184,7 @@ public abstract class WSServer extends Endpoint {
                             }
                         }
                     };
-//                    this.eventHandlerMap.put(dataType, eventHandler);
                     dataTypeList.forEach(dt -> this.eventHandlerMap.put(dt, eventHandler));
-//                    EventUtil.on(dataType, eventHandler);
                     dataTypeList.forEach(dt -> EventUtil.on(dt, eventHandler));
 
                 }
@@ -201,7 +199,6 @@ public abstract class WSServer extends Endpoint {
      */
     private void injectPropertyBySpring() {
         try {
-//            Class.forName("org.springframework.web.context.support.WebApplicationContextUtils");
             WebApplicationContext ac = WebApplicationContextUtils.getRequiredWebApplicationContext(
                     this.getHttpSession().getServletContext());
 
@@ -215,6 +212,7 @@ public abstract class WSServer extends Endpoint {
         } catch (Exception e) {
         }
     }
+
 
     public HttpSession getHttpSession() {
         return this.httpSession;
