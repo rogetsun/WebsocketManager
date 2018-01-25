@@ -199,7 +199,7 @@ public abstract class WSServer extends Endpoint {
      */
     private void injectPropertyBySpring() {
         try {
-            WebApplicationContext ac = WebApplicationContextUtils.getRequiredWebApplicationContext(
+            WebApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(
                     this.getHttpSession().getServletContext());
 
             Field[] fields = this.getClass().getDeclaredFields();
