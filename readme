@@ -50,6 +50,7 @@ websocket使用方法:
 
 20170104
     增加WSServer继承类用@resource,@autowired注入spring-bean。
+    20180126:发现WSServer子类属性使用@Resource注入spring管理的bean时,和tomcat本身有冲突报错无法使用.使用@Autowired可以.
 
 20170818
     1、增加WSServer内获取当前 webSocket 被请求时带的 RequestParameter
