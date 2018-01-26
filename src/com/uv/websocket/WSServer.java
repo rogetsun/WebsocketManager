@@ -109,6 +109,10 @@ public abstract class WSServer extends Endpoint {
     }
 
     @OnMessage
+    public void receive(String message, Session session) {
+        this.onMessage(message, session);
+    }
+
     public void onMessage(String message, Session session) {
 
     }
