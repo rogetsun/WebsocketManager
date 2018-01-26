@@ -108,15 +108,6 @@ public abstract class WSServer extends Endpoint {
         }
     }
 
-    @OnMessage
-    public void receive(String message, Session session) {
-        this.onMessage(message, session);
-    }
-
-    public void onMessage(String message, Session session) {
-
-    }
-
     @Override
     public void onClose(Session session, CloseReason closeReason) {
         for (Map.Entry<String, EventHandler> ehEntry : eventHandlerMap.entrySet()) {
