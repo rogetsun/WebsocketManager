@@ -25,6 +25,7 @@ public class WSSender implements Runnable {
     public void run() {
         while (session.isOpen()) {
             try {
+//                session.getAsyncRemote().sendText(wsCache.pop());
                 session.getBasicRemote().sendText(wsCache.pop());
             } catch (InterruptedException e) {
             } catch (Exception e) {
