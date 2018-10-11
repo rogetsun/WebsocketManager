@@ -17,8 +17,8 @@ import javax.websocket.server.ServerEndpointConfig;
  * websocket 监听,web容器启动时,加载Endpoint实现类到ServerContainer.
  */
 public class WSListener implements ServletContextListener {
-    
-    
+
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         /**
@@ -47,7 +47,6 @@ public class WSListener implements ServletContextListener {
                              * 注册Endpoint,注意url增加了前缀
                              */
                             addEndpoint(servletContextEvent, aClass, urlPrefix, url);
-                            System.out.println("scan Endpoint:" + aClass + ",url:" + urlPrefix + url);
                         }
                     }
                 }
@@ -56,7 +55,7 @@ public class WSListener implements ServletContextListener {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * 添加websocket 的serverEndPoint节点到服务容器,
      * 同时给节点的userProperties中增加servletContext
@@ -78,6 +77,7 @@ public class WSListener implements ServletContextListener {
         } else {
             URL = urlPrefix + url.substring(1);
         }
+        System.out.println("scan Endpoint:" + aClass + ",url:" + URL);
         /**
          * 从servletContext中取得服务容器
          */
@@ -102,14 +102,14 @@ public class WSListener implements ServletContextListener {
         } catch (DeploymentException e) {
             e.printStackTrace();
         }
-        
+
     }
-    
-    
+
+
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
     }
-    
+
     class MyEndpointConfigurator extends ServerEndpointConfig.Configurator {
         @Override
         public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
@@ -131,7 +131,7 @@ public class WSListener implements ServletContextListener {
                 e.printStackTrace();
             }
         }
-        
+
     }
-    
+
 }
