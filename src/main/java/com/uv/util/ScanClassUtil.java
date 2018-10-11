@@ -145,7 +145,7 @@ public class ScanClassUtil {
         for (File file : dirfiles) {
             // 如果是目录 则继续扫描
             if (file.isDirectory()) {
-                findAndAddClassesInPackageByFile(packageName + "."
+                findAndAddClassesInPackageByFile(packageName + ""
                                 + file.getName(), file.getAbsolutePath(), recursive,
                         classes);
             } else {
